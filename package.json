@@ -1,7 +1,7 @@
 {
-  "name": "bienes-raices",
+  "name": "housing-sale",
   "version": "1.0.0",
-  "description": "Proyecto de bienes raices en Node",
+  "description": "Web application for property sales",
   "main": "index.js",
   "type": "module",
   "scripts": {
