@@ -7,5 +7,7 @@ html(lang="es")
         title HousingSale | #{page}
         link(rel="stylesheet", href="/css/app.css")
     body.min-h-screen
+        if header
+            include header
         main.mx-auto.container.mt-10.px-2
             block contenido

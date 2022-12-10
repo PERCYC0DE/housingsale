@@ -1,12 +1,80 @@
-import User from "../model/User.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import { check, validationResult } from "express-validator";
-import { generateId } from "../helpers/token.js";
-import { emailRegister } from "../helpers/email.js";
+import User from "../model/User.js";
+import { generateId, generateJWT } from "../helpers/token.js";
+import { emailRegister, forgetMyPassword } from "../helpers/email.js";
 
 const formLogin = (req, res) => {
   res.render("auth/login", {
     page: "Iniciar sesión",
+    csrfToken: req.csrfToken(),
   });
+};
+
+const authenticateUser = async (req, res) => {
+  // Validations
+  await check("email")
+    .isEmail()
+    .withMessage("El email es obligatorio")
+    .run(req);
+  await check("password")
+    .notEmpty()
+    .withMessage("El password es obligatorio")
+    .run(req);
+
+  let result = validationResult(req);
+
+  // Validate that result is empty
+  if (!result.isEmpty()) {
+    return res.render("auth/login", {
+      page: "Iniciar sesión",
+      csrfToken: req.csrfToken(),
+      errors: result.array(),
+    });
+  }
+
+  const { email, password } = req.body;
+
+  // Check if exists user
+  const user = await User.findOne({ where: { email } });
+  if (!user) {
+    return res.render("auth/login", {
+      page: "Iniciar sesión",
+      csrfToken: req.csrfToken(),
+      errors: [{ msg: "El usuario no existe" }],
+    });
+  }
+
+  // Check if user is confirm
+  if (!user.confirmed) {
+    return res.render("auth/login", {
+      page: "Iniciar sesión",
+      csrfToken: req.csrfToken(),
+      errors: [{ msg: "Tu cuenta no ha sido confirmada" }],
+    });
+  }
+
+  // Check if the password is correct
+  if (!user.verifyPassword(password)) {
+    return res.render("auth/login", {
+      page: "Iniciar sesión",
+      csrfToken: req.csrfToken(),
+      errors: [{ msg: "El password es incorrecto" }],
+    });
+  }
+
+  // Authenticate User
+  const token = generateJWT(user.id);
+
+  // Save in cookie
+  return res
+    .cookie("_token", token, {
+      httpOnly: true,
+      // secure: true,
+      // sameSite: true,
+    })
+    .redirect("/properties");
 };
 
 const formRegisterUser = (req, res) => {
@@ -111,13 +179,112 @@ const confirmAccount = async (req, res, next) => {
 const forgetPassword = (req, res) => {
   res.render("auth/forget-password", {
     page: "Recuperar contraseña",
+    csrfToken: req.csrfToken(),
+  });
+};
+
+const resetPassword = async (req, res) => {
+  await check("email").isEmail().withMessage("Eso no parece un email").run(req);
+
+  let result = validationResult(req);
+
+  // Validate that result is empty
+  if (!result.isEmpty()) {
+    return res.render("auth/forget-password", {
+      page: "Recupera tu acceso a Bienes Raices",
+      csrfToken: req.csrfToken(),
+      errors: result.array(),
+    });
+  }
+
+  // Search user
+  const { email } = req.body;
+  const user = await User.findOne({ where: { email } });
+  if (!user) {
+    return res.render("auth/forget-password", {
+      page: "Recupera tu acceso a Bienes Raices",
+      csrfToken: req.csrfToken(),
+      errors: [{ msg: "El email no corresponde a ningún usuario" }],
+    });
+  }
+
+  // Generate token and send email
+  user.token = generateId();
+  await user.save();
+
+  // Send email
+  forgetMyPassword({
+    email: user.email,
+    name: user.name,
+    token: user.token,
+  });
+
+  // Render message
+  res.render("templates/message", {
+    page: "Restablece tu password",
+    message: "Hemos enviado un email con las instrucciones",
+  });
+};
+
+const validateToken = async (req, res) => {
+  const { token } = req.params;
+  const user = await User.findOne({ where: { token } });
+  if (!token) {
+    return res.render("auth/confirm-account", {
+      page: "Restablece tu password",
+      message: "Hubo un error al validar tu información",
+      error: true,
+    });
+  }
+
+  // Show form to change the password
+  res.render("auth/reset-password", {
+    page: "Restablece tu contraseña",
+    csrfToken: req.csrfToken(),
+  });
+};
+
+const setNewPassword = async (req, res) => {
+  // Validate new password
+  await check("email").isEmail().withMessage("Eso no parece un email").run(req);
+  let result = validationResult(req);
+
+  // Validate that result is empty
+  if (!result.isEmpty()) {
+    return res.render("auth/reset-password", {
+      page: "Restablece tu password",
+      csrfToken: req.csrfToken(),
+      errors: result.array(),
+    });
+  }
+
+  const { token } = req.params;
+  const { password } = req.body;
+
+  // Check who do the change
+  const user = await User.findOne({ where: { token } });
+
+  // Hashing new password
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(password, salt);
+  user.token = null;
+
+  await user.save();
+
+  res.render("auth/confirm-account", {
+    page: "Contraseña restablecida",
+    message: "La contraseña se guardo correctamente",
   });
 };
 
 export {
   formLogin,
+  authenticateUser,
   formRegisterUser,
   forgetPassword,
   registerUser,
   confirmAccount,
+  resetPassword,
+  validateToken,
+  setNewPassword,
 };
