@@ -1,7 +1,8 @@
 import express from "express";
 const router = express.Router();
-import { admin } from "../controllers/properties.controller.js";
+import { admin, createProperty } from "../controllers/properties.controller.js";
 
 router.get("/properties", admin);
+router.get("/properties/create", createProperty);
 
 export default router;
