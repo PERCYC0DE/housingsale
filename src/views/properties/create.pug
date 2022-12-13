@@ -25,29 +25,33 @@ block contenido
                             label.block.text-sm.uppercase.text-gray-500.mb-3.font-bold(for="category") Categoría
                             select#category.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(type="text" name="category")
                                 option(value="") - Seleccione una categoría -
+                                each category in categories
+                                    option(value=category.id)= category.name
                         div(class="w-1/2")
                             label.block.text-sm.uppercase.text-gray-500.mb-3.font-bold(for="category") Precio
                             select#price.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(type="text" name="price ")
-                                option(value="") - Seleccione una categoría -
+                                option(value="") - Seleccione un precio -
+                                each price in prices
+                                    option(value=price.id)= price.name
                     div(class="flex gap-2")
                         div(class="w-1/3")
                             label.block.text-sm.uppercase.text-gray-500.mb-3.font-bold(for="category") Habitaciones
                             select#bedrooms.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(type="text" name="bedrooms")
-                                option(value="") - Seleccione una categoría -
+                                option(value="") - Seleccione habitaciones -
                                 - var n = 1;
                                     while n < 5
                                         option(value=n) #{n++}
                         div(class="w-1/3")
                             label.block.text-sm.uppercase.text-gray-500.mb-3.font-bold(for="category") Estacionamiento
                             select#parking.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(type="text" name="parking")
-                                option(value="") - Seleccione una categoría -
+                                option(value="") - Seleccione estacionamientos -
                                 - var n = 1;
                                     while n < 5
                                         option(value=n) #{n++}
                         div(class="w-1/3")
                             label.block.text-sm.uppercase.text-gray-500.mb-3.font-bold(for="category") WC
                             select#wc.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(type="text" name="wc")
-                                option(value="") - Seleccione una categoría -
+                                option(value="") - Seleccione WC -
                                 - var n = 1;
                                     while n < 5
                                         option(value=n) #{n++}

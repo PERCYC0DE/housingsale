@@ -9,7 +9,9 @@
     "server": "nodemon index",
     "css": "postcss public/css/tailwind.css -o public/css/app.css --watch",
     "js": "webpack --watch",
-    "dev": "concurrently \"npm run css\" \"npm run js\""
+    "dev": "concurrently \"npm run css\" \"npm run js\"",
+    "db:import": "node ./seeder/seeder.js -i",
+    "db:delete": "node ./seeder/seeder.js -d"
   },
   "keywords": [],
   "author": "Percy Tejada <contact@percycode.com>",
