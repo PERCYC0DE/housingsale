@@ -17,6 +17,9 @@ block contenido
                     div
                         label.block.text-sm.uppercase.text-gray-500.mb-3.font-bold(for="title") Título del anuncio
                         input#title.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(placeholder="Título de propiedad, ej. Casa en la playa" type="text" name="title")
+                    div
+                        label.block.text-sm.uppercase.text-gray-500.mb-3.font-bold(for="description") Descripción
+                        textarea#description.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(placeholder="Descripción de la propiedad" name="description")
                     div(class="flex gap-2")
                         div(class="w-1/2")
                             label.block.text-sm.uppercase.text-gray-500.mb-3.font-bold(for="category") Categoría
@@ -36,19 +39,27 @@ block contenido
                                         option(value=n) #{n++}
                         div(class="w-1/3")
                             label.block.text-sm.uppercase.text-gray-500.mb-3.font-bold(for="category") Estacionamiento
-                            select#parking.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(type="text" name="parking ")
+                            select#parking.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(type="text" name="parking")
                                 option(value="") - Seleccione una categoría -
                                 - var n = 1;
                                     while n < 5
                                         option(value=n) #{n++}
                         div(class="w-1/3")
                             label.block.text-sm.uppercase.text-gray-500.mb-3.font-bold(for="category") WC
-                            select#wc.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(type="text" name="wc ")
+                            select#wc.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(type="text" name="wc")
                                 option(value="") - Seleccione una categoría -
                                 - var n = 1;
                                     while n < 5
                                         option(value=n) #{n++}
-                #map.h-96
+                .border-gray-200.border-t.py-5.space-y-5
+                    h3.text-lg.leading-6.font0medium.text-gray-900 Ubicación
+                    p.text-gray-600 Ubica la propiedad en el mapa
+                    #map.h-96
+                    div
+                        p.street
+                    input(type="hidden" name="street" id="street")
+                    input(type="hidden" name="lat" id="lat")
+                    input(type="hidden" name="lng" id="lng")
 block scripts
     script(src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js")
     script(src="https://unpkg.com/esri-leaflet@3.0.8/dist/esri-leaflet.js")
