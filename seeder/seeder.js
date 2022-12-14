@@ -1,9 +1,8 @@
 import { exit } from "node:process";
 import categories from "./categories.js";
 import prices from "./prices.js";
-import Category from "../src/model/Category.js";
-import Price from "../src/model/Price.js";
 import db from "../config/db.js";
+import { Property, Category, Price } from "../src/model/index.js";
 
 const importData = async () => {
   try {
