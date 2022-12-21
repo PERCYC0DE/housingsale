@@ -5,10 +5,14 @@ import {
   admin,
   createProperty,
   saveProperty,
+  addImageToProperty,
+  saveImage,
 } from "../controllers/properties.controller.js";
+import protectRoute from "../middlewares/protectRoutes.js";
+import upload from "../middlewares/uploadImage.js";
 
-router.get("/properties", admin);
-router.get("/properties/create", createProperty);
+router.get("/properties", protectRoute, admin);
+router.get("/properties/create", protectRoute, createProperty);
 router.post(
   "/properties/create",
   body("title").notEmpty().withMessage("El título del anuncio es obligatorio"),
@@ -27,7 +31,16 @@ router.post(
     .withMessage("Seleccione la cantidad de estacionamientos"),
   body("wc").isNumeric().withMessage("Seleccione la cantidad de baños"),
   body("lat").isNumeric().withMessage("Ubica la propiedad en el mapa"),
+  protectRoute,
   saveProperty
+);
+router.get("/properties/add-image/:id", protectRoute, addImageToProperty);
+
+router.post(
+  "/properties/add-image/:id",
+  protectRoute,
+  upload.single("image"),
+  saveImage
 );
 
 export default router;

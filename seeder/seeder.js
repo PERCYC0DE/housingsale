@@ -1,8 +1,9 @@
 import { exit } from "node:process";
 import categories from "./categories.js";
 import prices from "./prices.js";
+import user from "./user.js";
 import db from "../config/db.js";
-import { Property, Category, Price } from "../src/model/index.js";
+import { Property, Category, Price, User } from "../src/model/index.js";
 
 const importData = async () => {
   try {
@@ -16,6 +17,7 @@ const importData = async () => {
     await Promise.all([
       Category.bulkCreate(categories),
       Price.bulkCreate(prices),
+      User.bulkCreate(user),
     ]);
     exit(); // Cerramos el proceso sin indicar que hubo algún error
   } catch (error) {

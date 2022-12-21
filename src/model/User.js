@@ -27,6 +27,14 @@ const User = db.define(
         user.password = await bcrypt.hash(user.password, salt);
       },
     },
+    // Scopes: Sirven para eliminar ciertos campos cuando hacemos una consulta
+    scopes: {
+      deletePassword: {
+        attributes: {
+          exclude: ["password", "token", "confirmed", "createdAt", "updatedAt"],
+        },
+      },
+    },
   }
 );
 
