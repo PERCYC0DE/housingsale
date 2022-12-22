@@ -2,9 +2,15 @@ import { validationResult } from "express-validator";
 import { Price, Category, Property } from "../model/index.js";
 
 const admin = async (req, res) => {
+  const { id } = req.user;
+  const properties = await Property.findAll({
+    where: { userId: id },
+    include: [{ model: Category }, { model: Price }],
+  });
   res.render("properties/admin", {
     page: "Mis propiedades",
     header: true,
+    properties,
   });
 };
 
@@ -128,4 +134,101 @@ const saveImage = async (req, res, next) => {
   }
 };
 
-export { admin, createProperty, saveProperty, addImageToProperty, saveImage };
+const editProperty = async (req, res) => {
+  const { id } = req.params;
+
+  // Validate that property exists
+  const property = await Property.findByPk(id);
+  if (!property) return res.redirect("/properties");
+
+  // Validate that whoever visits the property is the one who created it
+  if (property.userId.toString() !== req.user.id.toString())
+    return res.redirect("/properties");
+
+  const [categories, prices] = await Promise.all([
+    Category.findAll(),
+    Price.findAll(),
+  ]);
+
+  res.render("properties/edit", {
+    page: `Editar propiedad: ${property.title}`,
+    header: true,
+    csrfToken: req.csrfToken(),
+    categories,
+    prices,
+    data: property,
+  });
+};
+
+const saveChanges = async (req, res) => {
+  // Verify validations
+  let resultValidations = validationResult(req);
+  if (!resultValidations.isEmpty()) {
+    const [categories, prices] = await Promise.all([
+      Category.findAll(),
+      Price.findAll(),
+    ]);
+
+    return res.render("properties/edit", {
+      page: "Editar propiedad",
+      csrfToken: req.csrfToken(),
+      categories,
+      prices,
+      errors: resultValidations.array(),
+      data: req.body,
+    });
+  }
+
+  const { id } = req.params;
+
+  // Validate that property exists
+  const property = await Property.findByPk(id);
+  if (!property) return res.redirect("/properties");
+
+  // Validate that whoever visits the property is the one who created it
+  if (property.userId.toString() !== req.user.id.toString())
+    return res.redirect("/properties");
+
+  try {
+    const {
+      title,
+      description,
+      bedrooms,
+      parking,
+      wc,
+      street,
+      lat,
+      lng,
+      price: priceId,
+      category: categoryId,
+    } = req.body;
+
+    property.set({
+      title,
+      description,
+      bedrooms,
+      parking,
+      wc,
+      street,
+      lat,
+      lng,
+      priceId,
+      categoryId,
+    });
+
+    await property.save();
+    res.redirect("/properties");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export {
+  admin,
+  createProperty,
+  saveProperty,
+  addImageToProperty,
+  saveImage,
+  editProperty,
+  saveChanges,
+};
