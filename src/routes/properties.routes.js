@@ -9,6 +9,8 @@ import {
   saveImage,
   editProperty,
   saveChanges,
+  deleteProperty,
+  showProperty,
 } from "../controllers/properties.controller.js";
 import protectRoute from "../middlewares/protectRoutes.js";
 import upload from "../middlewares/uploadImage.js";
@@ -68,4 +70,9 @@ router.post(
   protectRoute,
   saveChanges
 );
+
+router.post("/properties/delete/:id", protectRoute, deleteProperty);
+
+// Public zone
+router.get("/properties/:id", showProperty);
 export default router;
