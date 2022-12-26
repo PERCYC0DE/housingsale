@@ -4,17 +4,46 @@ import { validationResult } from "express-validator";
 import { Price, Category, Property } from "../model/index.js";
 
 const admin = async (req, res) => {
-  const { id } = req.user;
-  const properties = await Property.findAll({
-    where: { userId: id },
-    include: [{ model: Category }, { model: Price }],
-  });
-  res.render("properties/admin", {
-    page: "Mis propiedades",
-    header: true,
-    csrfToken: req.csrfToken(),
-    properties,
-  });
+  const { page: currentPage } = req.query;
+
+  const expression = /^[1-9]$/;
+  if (!expression.test(currentPage)) {
+    return res.redirect("/properties?page=1");
+  }
+  try {
+    const { id } = req.user;
+
+    // Limites y Offset para el paginador
+    const limit = 10;
+    const offset = currentPage * limit - limit;
+
+    const [properties, total] = await Promise.all([
+      Property.findAll({
+        limit,
+        offset,
+        where: { userId: id },
+        include: [{ model: Category }, { model: Price }],
+      }),
+      Property.count({
+        where: {
+          userId: id,
+        },
+      }),
+    ]);
+    res.render("properties/admin", {
+      page: "Mis propiedades",
+      header: true,
+      csrfToken: req.csrfToken(),
+      pages: Math.ceil(total / limit),
+      currentPage: Number(currentPage),
+      total,
+      offset,
+      limit,
+      properties,
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 // Form to create a new property
