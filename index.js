@@ -3,6 +3,8 @@ import csurf from "csurf";
 import cookieParser from "cookie-parser";
 import userRoutes from "./src/routes/user.routes.js";
 import propertiesRoutes from "./src/routes/properties.routes.js";
+import appRoutes from "./src/routes/app.routes.js";
+import apiRoutes from "./src/routes/api.routes.js";
 import db from "./config/db.js";
 
 // Create app
@@ -34,8 +36,10 @@ app.set("views", "./src/views");
 app.use(express.static("public"));
 
 // Define routing
+app.use("/", appRoutes);
 app.use("/auth", userRoutes);
 app.use("/", propertiesRoutes);
+app.use("/api", apiRoutes);
 
 // Create server
 const port = 4000;
