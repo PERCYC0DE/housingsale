@@ -37,8 +37,8 @@ block contenido
             h2(class="text-center text-4xl font-extrabold pt-10") Departamentos en Venta
 
             div(class="grid grid-cols-1 lg:grid-cols-3 gap-5 mt-14")
-                //- each property in departaments
-                //-     include ./templates/card
+                each property in departments
+                    include ./templates/card
 
 
 block scripts

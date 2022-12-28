@@ -11,9 +11,13 @@ const home = async (req, res) => {
       include: [{ model: Price }],
       order: [["createdAt", "DESC"]],
     }),
+    Property.findAll({
+      limit: 3,
+      where: { categoryId: 2 },
+      include: [{ model: Price }],
+      order: [["createdAt", "DESC"]],
+    }),
   ]);
-
-  console.log(categories);
 
   res.render("home", {
     page: "Inicio",

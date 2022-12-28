@@ -4,13 +4,13 @@ block styles
     link(rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css")
 
 block contenido
-    h1 Mostrando propiedad
+    //- h1 Mostrando propiedad
     //- pre= JSON.stringify(property, undefined, 2)
     div(class="py-5")
         h1(class="text-4xl my-10 font-extrabold text-center")= property.title
 
         div
-            a(href="" class="font-bold text-gray-600 text-sm") Categoria
+            a(href="" class="font-bold text-gray-600 text-sm") Categoria: 
                 span(class="font-normal")= property.category.name
 
         div(class="mt-5 md:flex md:gap-4")
@@ -20,7 +20,7 @@ block contenido
                     p= property.description
                     h2(class="text-2xl leading-6 font-bold text-gray-900") Información de propiedad
                     div(class="grid grid-cols-1 md:grid-cols-2 md:gap-4")
-                        p(class="text-gray-600 font-bold text-xs") WC
+                        p(class="text-gray-600 font-bold text-xs") Baños
                         span(class="text-gray-600 block text-lg")= property.wc
 
                         p(class="text-gray-600 font-bold text-xs") Habitaciones

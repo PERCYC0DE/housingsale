@@ -1,10 +1,9 @@
 (function () {
-  const lat = 34.040967;
-  const lng = -118.1618621;
+  const lat = -13.4174941;
+  const lng = -76.1330409;
   const mapa = L.map("mapa-inicio").setView([lat, lng], 13);
 
   let markers = new L.FeatureGroup().addTo(mapa);
-
   let propiedades = [];
 
   // Filtros
@@ -23,7 +22,7 @@
 
   // Filtrado de Categorias y precios
   categoriasSelect.addEventListener("change", (e) => {
-    filtros.categoria = +e.target.value;
+    filtros.categoria = +e.target.value; // With +e convert string to number
     filtrarPropiedades();
   });
 
@@ -35,8 +34,8 @@
   const obtenerPropiedades = async () => {
     try {
       const url = "/api/properties";
-      const respuesta = await fetch(url);
-      propiedades = await respuesta.json();
+      const response = await fetch(url);
+      propiedades = await response.json();
       mostrarPropiedades(propiedades);
     } catch (error) {
       console.log(error);
@@ -56,7 +55,7 @@
                 <h1 class="text-xl font-extrabold uppercase my-2">${propiedad?.title}</h1>
                 <img src="/uploads/${propiedad?.image}" alt="Imagen de la propiedad ${propiedad.title}">
                 <p class="text-gray-600 font-bold">${propiedad.price.name}</p>
-                <a href="/propiedad/${propiedad.id}" class="bg-indigo-600 block p-2 text-center font-bold uppercase">Ver Propiedad</a>
+                <a href="/properties/${propiedad.id}" class="bg-indigo-600 block p-2 text-center font-bold uppercase">Ver Propiedad</a>
             `);
       markers.addLayer(marker);
     });
@@ -70,10 +69,10 @@
   };
 
   const filtrarCategoria = (propiedad) =>
-    filtros.categoria ? propiedad.categoriaId === filtros.categoria : propiedad;
+    filtros.categoria ? propiedad.categoryId === filtros.categoria : propiedad;
 
   const filtrarPrecio = (propiedad) =>
-    filtros.precio ? propiedad.precioId === filtros.precio : propiedad;
+    filtros.precio ? propiedad.priceId === filtros.precio : propiedad;
 
   obtenerPropiedades();
 })();
