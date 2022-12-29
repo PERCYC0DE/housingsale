@@ -1,7 +1,8 @@
 // Delete image
 import { unlink } from "node:fs/promises";
 import { validationResult } from "express-validator";
-import { Price, Category, Property } from "../model/index.js";
+import { Price, Category, Property, Message } from "../model/index.js";
+import { isSeller, formatDate } from "../helpers/index.js";
 
 const admin = async (req, res) => {
   const { page: currentPage } = req.query;
@@ -282,9 +283,79 @@ const showProperty = async (req, res) => {
   });
 
   if (!property) return res.redirect("404");
+
   res.render("properties/show", {
     property,
     page: property.title,
+    csrfToken: req.csrfToken(),
+    user: req.user,
+    isSeller: isSeller(req.user?.id, property.userId),
+  });
+};
+
+const sendMessage = async (req, res) => {
+  const { id } = req.params;
+
+  // Check that exists property
+  const property = await Property.findByPk(id, {
+    include: [{ model: Price }, { model: Category }],
+  });
+
+  if (!property) return res.redirect("/404");
+
+  // Render the errors
+  // Validations
+  let resultValidations = validationResult(req);
+
+  if (!resultValidations.isEmpty()) {
+    return res.render("properties/show", {
+      property,
+      page: property.title,
+      csrfToken: req.csrfToken(),
+      user: req.user,
+      isSeller: isSeller(req.user?.id, property.userId),
+      errors: resultValidations.array(),
+    });
+  }
+
+  const { message } = req.body;
+  const { id: propertyId } = req.params;
+  const { id: userId } = req.user;
+
+  // Save the message
+  await Message.create({
+    message,
+    propertyId,
+    userId,
+  });
+
+  res.redirect("/");
+};
+
+// Read received messages
+const viewMessage = async (req, res) => {
+  const { id } = req.params;
+
+  // Validate that the property exists
+  const property = await Property.findByPk(id, {
+    include: [
+      {
+        model: Message,
+        include: [{ model: User.scope("deletePassword"), as: "user" }],
+      },
+    ],
+  });
+
+  if (!property) return res.redirect("/properties");
+
+  // Check that whoever visits the URl, is the one who created the property
+  if (property.userId.toString() !== req.user.id.toString())
+    return res.redirect("/properties");
+
+  res.render("properties/messages", {
+    page: "Mensajes",
+    messages: property.messages,
+    formatDate,
   });
 };
 
@@ -298,4 +369,6 @@ export {
   saveChanges,
   deleteProperty,
   showProperty,
+  sendMessage,
+  viewMessage,
 };

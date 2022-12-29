@@ -27,7 +27,7 @@ const User = db.define(
         user.password = await bcrypt.hash(user.password, salt);
       },
     },
-    // Scopes: Sirven para eliminar ciertos campos cuando hacemos una consulta
+    // Scopes: They are used to eliminate certain fields when we make a query
     scopes: {
       deletePassword: {
         attributes: {

@@ -6,7 +6,7 @@
   let markers = new L.FeatureGroup().addTo(mapa);
   let propiedades = [];
 
-  // Filtros
+  // Filters
   const filtros = {
     categoria: "",
     precio: "",
@@ -20,7 +20,7 @@
       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   }).addTo(mapa);
 
-  // Filtrado de Categorias y precios
+  // Filtering of Categories and prices
   categoriasSelect.addEventListener("change", (e) => {
     filtros.categoria = +e.target.value; // With +e convert string to number
     filtrarPropiedades();

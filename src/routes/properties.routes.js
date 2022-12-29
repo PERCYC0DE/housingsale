@@ -11,9 +11,12 @@ import {
   saveChanges,
   deleteProperty,
   showProperty,
+  sendMessage,
+  viewMessage,
 } from "../controllers/properties.controller.js";
 import protectRoute from "../middlewares/protectRoutes.js";
 import upload from "../middlewares/uploadImage.js";
+import identifyUser from "../middlewares/identifyUser.js";
 
 router.get("/properties", protectRoute, admin);
 router.get("/properties/create", protectRoute, createProperty);
@@ -74,5 +77,19 @@ router.post(
 router.post("/properties/delete/:id", protectRoute, deleteProperty);
 
 // Public zone
-router.get("/properties/:id", showProperty);
+router.get("/properties/:id", identifyUser, showProperty);
+
+// Save the messages
+router.post(
+  "/property/:id",
+  identifyUser,
+  // Validations
+  body("message")
+    .isLength({ min: 20 })
+    .withMessage("El Mensaje no puede ir vacio o es muy corto"),
+  sendMessage
+);
+
+router.get("/messages/:id", protectRoute, viewMessage);
+
 export default router;

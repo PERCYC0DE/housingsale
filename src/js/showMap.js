@@ -4,13 +4,11 @@
   const titulo = document.querySelector("#titulo");
   const mapa = L.map("mapa").setView([lat, lng], 16);
 
-  console.log("Lat", lat);
-
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution:
       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   }).addTo(mapa);
 
-  // Agregar el pin
+  // Add the pin
   L.marker([lat, lng]).addTo(mapa).bindPopup(titulo);
 })();
