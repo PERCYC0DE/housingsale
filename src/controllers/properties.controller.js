@@ -1,7 +1,7 @@
 // Delete image
 import { unlink } from "node:fs/promises";
 import { validationResult } from "express-validator";
-import { Price, Category, Property, Message } from "../model/index.js";
+import { Price, Category, Property, Message, User } from "../model/index.js";
 import { isSeller, formatDate } from "../helpers/index.js";
 
 const admin = async (req, res) => {
@@ -23,7 +23,7 @@ const admin = async (req, res) => {
         limit,
         offset,
         where: { userId: id },
-        include: [{ model: Category }, { model: Price }],
+        include: [{ model: Category }, { model: Price }, { model: Message }],
       }),
       Property.count({
         where: {
@@ -274,6 +274,28 @@ const deleteProperty = async (req, res) => {
   res.redirect("/properties");
 };
 
+// Modify the status of property
+const changeStatus = async (req, res) => {
+  const { id } = req.params;
+
+  // Validar que la propiedad exista
+  const property = await Property.findByPk(id);
+  if (!property) return res.redirect("/properties");
+
+  // Revisar que quien visita la URl, es quien creo la propiedad
+  if (property.userId.toString() !== req.user.id.toString())
+    return res.redirect("/properties");
+
+  // Update
+  property.published = !property.published;
+
+  await property.save();
+
+  res.json({
+    result: true,
+  });
+};
+
 const showProperty = async (req, res) => {
   // Validate if property exist
   const { id } = req.params;
@@ -282,7 +304,7 @@ const showProperty = async (req, res) => {
     include: [{ model: Price }, { model: Category }],
   });
 
-  if (!property) return res.redirect("404");
+  if (!property || !property.published) return res.redirect("/404");
 
   res.render("properties/show", {
     property,
@@ -368,6 +390,7 @@ export {
   editProperty,
   saveChanges,
   deleteProperty,
+  changeStatus,
   showProperty,
   sendMessage,
   viewMessage,

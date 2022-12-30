@@ -3,6 +3,7 @@ const router = express.Router();
 import {
   formLogin,
   authenticateUser,
+  logout,
   formRegisterUser,
   forgetPassword,
   registerUser,
@@ -14,6 +15,9 @@ import {
 
 router.get("/login", formLogin);
 router.post("/login", authenticateUser);
+
+// Logout
+router.post("/logout", logout);
 router.get("/register", formRegisterUser);
 router.post("/register", registerUser);
 router.get("/confirm/:token", confirmAccount);

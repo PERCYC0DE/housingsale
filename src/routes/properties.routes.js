@@ -10,6 +10,7 @@ import {
   editProperty,
   saveChanges,
   deleteProperty,
+  changeStatus,
   showProperty,
   sendMessage,
   viewMessage,
@@ -74,7 +75,11 @@ router.post(
   saveChanges
 );
 
+// Delete one property
 router.post("/properties/delete/:id", protectRoute, deleteProperty);
+
+// Modify one property
+router.put("/properties/:id", protectRoute, changeStatus);
 
 // Public zone
 router.get("/properties/:id", identifyUser, showProperty);
