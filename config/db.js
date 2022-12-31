@@ -16,8 +16,8 @@ const db = new Sequelize(
     pool: {
       max: 5,
       min: 0,
-      acquire: 30000, // Tiempo máximo de una conexión en donde se mostrará un error
-      idle: 10000, // Tiempo máximo de inactividad de una conexión para pasar a desconectarla
+      acquire: 30000, // Maximum time of a connection where an error will be displayed
+      idle: 10000, // Maximum time of inactivity of a connection to start disconnecting it
     },
     operatorAliases: false,
   }

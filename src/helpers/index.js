@@ -1,6 +1,4 @@
-const isSeller = (userId, propertyUserId) => {
-  return userId === propertyUserId;
-};
+const isSeller = (userId, propertyUserId) => userId === propertyUserId;
 
 const formatDate = (date) => {
   const newDate = new Date(date).toISOString().slice(0, 10);

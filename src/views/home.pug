@@ -3,7 +3,7 @@ extends ./layout/app
 block styles
     link(rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css")
 
-block contenido
+block content
     div(class="py-5 ")
         h1(class="text-center text-4xl font-extrabold") Ubicación en el Mapa
 
@@ -11,20 +11,20 @@ block contenido
             h2(class="text-sm uppercase text-gray-800 font-bold") Filtrar Propiedades:
 
             div(class="w-full md:w-auto flex items-center gap-2")
-                label(for="categorias" class="text-sm w-24 uppercase text-gray-500 font-bold") Categorías
-                select(id="categorias" class="flex-1 bg-white w-full px-3 py-2 border border-gray-300 rounded-md shadow" )
+                label(for="categories" class="text-sm w-24 uppercase text-gray-500 font-bold") Categorías
+                select(id="categories" class="flex-1 bg-white w-full px-3 py-2 border border-gray-300 rounded-md shadow" )
                     option(value="") - Seleccione -
                     each category in categories
                         option(value=category.id )= category.name
 
             div(class="w-full md:w-auto flex items-center gap-2")
-                label(for="precios" class="text-sm w-24 uppercase text-gray-500 font-bold") Precios
-                select(id="precios" class="flex-1 bg-white w-full px-3 py-2 border border-gray-300 rounded-md shadow" )
+                label(for="prices" class="text-sm w-24 uppercase text-gray-500 font-bold") Precios
+                select(id="prices" class="flex-1 bg-white w-full px-3 py-2 border border-gray-300 rounded-md shadow" )
                     option(value="") - Seleccione -
                     each price in prices
                         option(value=price.id )= price.name
 
-        div(id="mapa-inicio" class="h-[600px] mt-5")
+        div(id="map-home" class="h-[600px] mt-5")
 
         section(class="py-5")
             h2(class="text-center text-4xl font-extrabold pt-10") Casas en Venta

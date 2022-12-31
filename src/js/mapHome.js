@@ -1,78 +1,75 @@
 (function () {
   const lat = -13.4174941;
   const lng = -76.1330409;
-  const mapa = L.map("mapa-inicio").setView([lat, lng], 13);
+  const map = L.map("map-home").setView([lat, lng], 13);
 
-  let markers = new L.FeatureGroup().addTo(mapa);
-  let propiedades = [];
+  let markers = new L.FeatureGroup().addTo(map);
+  let properties = [];
 
   // Filters
-  const filtros = {
-    categoria: "",
-    precio: "",
+  const filters = {
+    category: "",
+    price: "",
   };
 
-  const categoriasSelect = document.querySelector("#categorias");
-  const preciosSelect = document.querySelector("#precios");
+  const categoriesSelect = document.querySelector("#categories");
+  const pricesSelect = document.querySelector("#prices");
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution:
       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  }).addTo(mapa);
+  }).addTo(map);
 
   // Filtering of Categories and prices
-  categoriasSelect.addEventListener("change", (e) => {
-    filtros.categoria = +e.target.value; // With +e convert string to number
-    filtrarPropiedades();
+  categoriesSelect.addEventListener("change", (e) => {
+    filters.category = +e.target.value; // With +e convert string to number
+    filterProperties();
   });
 
-  preciosSelect.addEventListener("change", (e) => {
-    filtros.precio = +e.target.value;
-    filtrarPropiedades();
+  pricesSelect.addEventListener("change", (e) => {
+    filters.price = +e.target.value;
+    filterProperties();
   });
 
-  const obtenerPropiedades = async () => {
+  const getProperties = async () => {
     try {
       const url = "/api/properties";
       const response = await fetch(url);
-      propiedades = await response.json();
-      mostrarPropiedades(propiedades);
+      properties = await response.json();
+      showProperties(properties);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const mostrarPropiedades = (propiedades) => {
-    // Limpiar los markers previos
-    markers.clearLayers();
+  const showProperties = (properties) => {
+    markers.clearLayers(); // Clear previous markers
 
-    propiedades.forEach((propiedad) => {
-      // Agregar los pines
-      const marker = new L.marker([propiedad?.lat, propiedad?.lng], {
+    properties.forEach((property) => {
+      // Add the pins
+      const marker = new L.marker([property?.lat, property?.lng], {
         autoPan: true,
-      }).addTo(mapa).bindPopup(`
-                <p class="text-indigo-600 font-bold">${propiedad.category.name}</p>
-                <h1 class="text-xl font-extrabold uppercase my-2">${propiedad?.title}</h1>
-                <img src="/uploads/${propiedad?.image}" alt="Imagen de la propiedad ${propiedad.title}">
-                <p class="text-gray-600 font-bold">${propiedad.price.name}</p>
-                <a href="/properties/${propiedad.id}" class="bg-indigo-600 block p-2 text-center font-bold uppercase">Ver Propiedad</a>
+      }).addTo(map).bindPopup(`
+                <p class="text-indigo-600 font-bold">${property.category.name}</p>
+                <h1 class="text-xl font-extrabold uppercase my-2">${property?.title}</h1>
+                <img src="/uploads/${property?.image}" alt="Imagen de la propiedad ${property.title}">
+                <p class="text-gray-600 font-bold">${property.price.name}</p>
+                <a href="/properties/${property.id}" class="bg-indigo-600 block p-2 text-center font-bold uppercase">Ver Propiedad</a>
             `);
       markers.addLayer(marker);
     });
   };
 
-  const filtrarPropiedades = () => {
-    const resultado = propiedades
-      .filter(filtrarCategoria)
-      .filter(filtrarPrecio);
-    mostrarPropiedades(resultado);
+  const filterProperties = () => {
+    const result = properties.filter(filterCategory).filter(filterPrice);
+    showProperties(result);
   };
 
-  const filtrarCategoria = (propiedad) =>
-    filtros.categoria ? propiedad.categoryId === filtros.categoria : propiedad;
+  const filterCategory = (property) =>
+    filters.category ? property.categoryId === filters.category : property;
 
-  const filtrarPrecio = (propiedad) =>
-    filtros.precio ? propiedad.priceId === filtros.precio : propiedad;
+  const filterPrice = (property) =>
+    filters.price ? property.priceId === filters.price : property;
 
-  obtenerPropiedades();
+  getProperties();
 })();

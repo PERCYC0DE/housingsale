@@ -1,14 +1,14 @@
 (function () {
-  const cambiarEstadoBotones = document.querySelectorAll(".changeStatus");
+  const changeStatusButtons = document.querySelectorAll(".changeStatus");
   const token = document
     .querySelector('meta[name="csrf-token"]')
     .getAttribute("content");
 
-  cambiarEstadoBotones.forEach((boton) => {
-    boton.addEventListener("click", cambiarEstadoPropiedad);
+  changeStatusButtons.forEach((boton) => {
+    boton.addEventListener("click", changeStatusProperty);
   });
 
-  async function cambiarEstadoPropiedad(e) {
+  async function changeStatusProperty(e) {
     const { propertyId: id } = e.target.dataset;
 
     try {

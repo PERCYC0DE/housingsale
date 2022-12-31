@@ -77,12 +77,10 @@ const authenticateUser = async (req, res) => {
     .redirect("/properties");
 };
 
-const logout = async (req, res) => {
-  return res.clearCookie("_token").status(200).redirect("/auth/login");
-};
+const logout = async (req, res) =>
+  res.clearCookie("_token").status(200).redirect("/auth/login");
 
 const formRegisterUser = (req, res) => {
-  // console.log(req.csrfToken());
   res.render("auth/register", {
     page: "Crear cuenta",
     csrfToken: req.csrfToken(),

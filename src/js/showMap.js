@@ -1,14 +1,14 @@
 (function () {
   const lat = document.querySelector("#lat").textContent;
   const lng = document.querySelector("#lng").textContent;
-  const titulo = document.querySelector("#titulo");
-  const mapa = L.map("mapa").setView([lat, lng], 16);
+  const title = document.querySelector("#title");
+  const map = L.map("map").setView([lat, lng], 16);
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution:
       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  }).addTo(mapa);
+  }).addTo(map);
 
   // Add the pin
-  L.marker([lat, lng]).addTo(mapa).bindPopup(titulo);
+  L.marker([lat, lng]).addTo(map).bindPopup(title);
 })();

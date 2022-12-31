@@ -1,5 +1,4 @@
-// Delete image
-import { unlink } from "node:fs/promises";
+import { unlink } from "node:fs/promises"; // Library to delete image
 import { validationResult } from "express-validator";
 import { Price, Category, Property, Message, User } from "../model/index.js";
 import { isSeller, formatDate } from "../helpers/index.js";
@@ -8,13 +7,12 @@ const admin = async (req, res) => {
   const { page: currentPage } = req.query;
 
   const expression = /^[1-9]$/;
-  if (!expression.test(currentPage)) {
-    return res.redirect("/properties?page=1");
-  }
+  if (!expression.test(currentPage)) return res.redirect("/properties?page=1");
+
   try {
     const { id } = req.user;
 
-    // Limites y Offset para el paginador
+    // Limits and Offset for the pager
     const limit = 10;
     const offset = currentPage * limit - limit;
 
@@ -31,6 +29,7 @@ const admin = async (req, res) => {
         },
       }),
     ]);
+
     res.render("properties/admin", {
       page: "Mis propiedades",
       header: true,
@@ -47,7 +46,6 @@ const admin = async (req, res) => {
   }
 };
 
-// Form to create a new property
 const createProperty = async (req, res) => {
   const [categories, prices] = await Promise.all([
     Category.findAll(),
@@ -128,6 +126,7 @@ const saveProperty = async (req, res) => {
 const addImageToProperty = async (req, res) => {
   // Validate if property exists
   const { id } = req.params;
+
   // Validate that property is not published
   const property = await Property.findByPk(id);
   if (!property) return res.redirect("/properties");
@@ -147,10 +146,12 @@ const addImageToProperty = async (req, res) => {
 const saveImage = async (req, res, next) => {
   // Validate if property exists
   const { id } = req.params;
+
   // Validate that property is not published
   const property = await Property.findByPk(id);
   if (!property) return res.redirect("/properties");
   if (property.published) return res.redirect("/properties");
+
   // Validate that property owner
   if (req.user.id.toString() !== property.userId.toString())
     return res.redirect("/properties");
@@ -160,7 +161,6 @@ const saveImage = async (req, res, next) => {
     property.image = req.file.filename;
     property.published = 1;
     await property.save();
-    console.log("Here");
     next();
   } catch (error) {
     console.log();
@@ -269,6 +269,7 @@ const deleteProperty = async (req, res) => {
 
   // Delete image associate
   await unlink(`public/uploads/${property.image}`);
+
   // Delete property
   await property.destroy();
   res.redirect("/properties");
@@ -278,11 +279,11 @@ const deleteProperty = async (req, res) => {
 const changeStatus = async (req, res) => {
   const { id } = req.params;
 
-  // Validar que la propiedad exista
+  // Validate that the property exists
   const property = await Property.findByPk(id);
   if (!property) return res.redirect("/properties");
 
-  // Revisar que quien visita la URl, es quien creo la propiedad
+  // Check that whoever visits the URl, is the one who created the property
   if (property.userId.toString() !== req.user.id.toString())
     return res.redirect("/properties");
 
@@ -315,6 +316,7 @@ const showProperty = async (req, res) => {
   });
 };
 
+// Send message to owner of Property
 const sendMessage = async (req, res) => {
   const { id } = req.params;
 

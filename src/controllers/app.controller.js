@@ -32,7 +32,7 @@ const home = async (req, res) => {
 const categories = async (req, res) => {
   const { id } = req.params;
 
-  // Comprobar que la categoria exista
+  // Check that the category exists
   const category = await Category.findByPk(id);
   if (!category) return res.redirect("/404");
 
@@ -61,12 +61,10 @@ const notFound = (req, res) => {
 const search = async (req, res) => {
   const { keyword } = req.body;
 
-  // Validar que termino no este vacio
-  if (!keyword.trim()) {
-    return res.redirect("back");
-  }
+  // Validate that keyword is not empty
+  if (!keyword.trim()) return res.redirect("back");
 
-  // Consultar las propiedades
+  // Consult the properties
   const properties = await Propiedad.findAll({
     where: {
       title: {
