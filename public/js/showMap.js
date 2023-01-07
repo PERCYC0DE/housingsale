@@ -16,7 +16,7 @@
   \***************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n(function () {\n  const lat = document.querySelector(\"#lat\").textContent;\n  const lng = document.querySelector(\"#lng\").textContent;\n  const titulo = document.querySelector(\"#titulo\");\n  const mapa = L.map(\"mapa\").setView([lat, lng], 16);\n\n  L.tileLayer(\"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png\", {\n    attribution:\n      '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors',\n  }).addTo(mapa);\n\n  // Add the pin\n  L.marker([lat, lng]).addTo(mapa).bindPopup(titulo);\n})();\n\n\n//# sourceURL=webpack://housing-sale/./src/js/showMap.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n(function () {\n  const lat = document.querySelector(\"#lat\").textContent;\n  const lng = document.querySelector(\"#lng\").textContent;\n  const title = document.querySelector(\"#title\");\n  const map = L.map(\"map\").setView([lat, lng], 16);\n\n  L.tileLayer(\"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png\", {\n    attribution:\n      '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors',\n  }).addTo(map);\n\n  // Add the pin\n  L.marker([lat, lng]).addTo(map).bindPopup(title);\n})();\n\n\n//# sourceURL=webpack://housing-sale/./src/js/showMap.js?");
 
 /***/ })
 
